@@ -20,7 +20,7 @@ class AssetFixtures extends Fixture implements DependentFixtureInterface
      **/
     public const NB_OBJECT = 30;
 
-    const PHOTOS = ['amethyst.jpg', 'buddha.jpg', 'crystal.jpg', 'diamond1.jpg', 'diamond2.jpg', 'flying-carpet.png', 'sculpture.jpg', 'stone.jpg', 'throne.jpg'];
+    const PHOTOS = ['amethyst.jpg', 'buddha.jpg', 'crystal.jpg', 'diamond1.jpg', 'diamond2.jpg', 'flying-carpet.png', 'sculpture.jpg', 'stone.jpg', 'throne.png'];
 
     public function getDependencies()
     {
