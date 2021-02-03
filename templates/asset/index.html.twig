@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Asset index{% endblock %}
+
+{% block body %}
+    <h1>Asset index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Title</th>
+                <th>PlaceOfDiscovery</th>
+                <th>DepositDate</th>
+                <th>Value</th>
+                <th>Photo</th>
+                <th>UpdatedAt</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for asset in assets %}
+            <tr>
+                <td>{{ asset.id }}</td>
+                <td>{{ asset.title }}</td>
+                <td>{{ asset.placeOfDiscovery }}</td>
+                <td>{{ asset.depositDate ? asset.depositDate|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ asset.value }}</td>
+                <td>{{ asset.photo }}</td>
+                <td>{{ asset.updatedAt ? asset.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>
+                    <a href="{{ path('asset_show', {'id': asset.id}) }}">show</a>
+                    <a href="{{ path('asset_edit', {'id': asset.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="8">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('asset_new') }}">Create new</a>
+{% endblock %}

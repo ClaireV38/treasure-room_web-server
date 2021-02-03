@@ -19,3 +19,11 @@ body {
 main {
     flex-grow: 1;
 }
+
+/*asset details*/
+.photo-detail {
+    width: 100%;
+    object-fit: contain;
+    height: 200px;
+    margin: auto;
+}
