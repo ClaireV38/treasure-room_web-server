@@ -3,15 +3,19 @@ $primary: darken(#428bca, 20%);
 
 @import "~bootstrap/scss/bootstrap";
 
+html,
+body {
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
 body {
     background-color: lightgray;
-    height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 main {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
+    flex-grow: 1;
 }
