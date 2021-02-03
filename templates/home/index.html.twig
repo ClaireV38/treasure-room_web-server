@@ -1,5 +1,23 @@
 {% extends 'base.html.twig' %}
 {% block title %}Treasure room{% endblock %}
 {% block body %}
-                Welcome in the treasure room site
+<div class="container">
+    <h1 class="text-center">Bienvenue dans la salle du trésor</h1>
+    <h5 class="text-center">les derniers trésors déposés :</h5>
+    <div class="row">
+    {% for asset in assets %}
+        <div class="card col-md-4">
+            <img src="{{ asset('build/images/'~asset.photo) }}" class="card-img-top" alt="{{ asset.photo }}">
+            <div class="card-body">
+                <h5 class="card-title">{{ asset.title }}</h5>
+                <p class="card-text">lieu de découverte : {{ asset.placeOfDiscovery }}</p>
+                <p class="card-text">date de dépot : {{ asset.depositDate  |date("d/m/Y") }}</p>
+                <p class="card-text">valeur : {{ asset.value }} $</p>
+                <p class="card-text">propriétaire : {{ asset.owner.name }} $</p>
+                <a href="#" class="btn btn-primary">Go somewhere</a>
+            </div>
+        </div>
+    {% endfor %}
+    </div>
+</div>
 {% endblock %}
