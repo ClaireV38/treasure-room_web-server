@@ -3,10 +3,14 @@
 namespace App\Entity;
 
 use App\Repository\AssetRepository;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Symfony\Component\HttpFoundation\File\File;
 
 /**
  * @ORM\Entity(repositoryClass=AssetRepository::class)
+ * @Vich\Uploadable
  */
 class Asset
 {
@@ -41,6 +45,12 @@ class Asset
      * @ORM\Column(type="string", length=200, nullable=true)
      */
     private $photo;
+
+    /**
+     * @Vich\UploadableField(mapping="photo_file", fileNameProperty="photo")
+     * @var File
+     */
+    private $photoFile;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="assets")
@@ -156,5 +166,19 @@ class Asset
         $this->updatedAt = $updatedAt;
 
         return $this;
+    }
+
+    public function setPhotoFile(File $image = null): Asset
+    {
+        $this->photoFile = $image;
+        if ($image) {
+            $this->updatedAt = new DateTime('now');
+        }
+        return $this;
+    }
+
+    public function getPhotoFile(): ?File
+    {
+        return $this->photoFile;
     }
 }

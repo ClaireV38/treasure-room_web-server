@@ -7,13 +7,20 @@
     <meta name="keywords" content="">
     <link rel="icon" type="image/png" href="{{ asset('build/images/logocrown.png') }}"/>
     <title>{% block title %}Welcome!{% endblock %}</title>
+    {{ encore_entry_link_tags('app') }}
     {% block stylesheets %}
-        {{ encore_entry_link_tags('app') }}
     {% endblock %}
 </head>
 <body>
 {% include '_navbar.html.twig' %}
 <main>
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ label }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
     {% block body %}{% endblock %}
 </main>
 {% block javascripts %}

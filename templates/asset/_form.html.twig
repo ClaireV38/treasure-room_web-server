@@ -1,4 +1,10 @@
 {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+  {{ form_row(form.title, { 'label': 'Nom du trésor :' }) }}
+     {{ form_row(form.placeOfDiscovery, { 'label': 'Lieu de découverte :' }) }}
+     {{ form_row(form.value, { 'label': 'Valeur :' }) }}
+     {{ form_row(form.category, { 'label': 'Catégorie :' }) }}
+     {{ form_row(form.owner, { 'label': 'Propriétaire :' }) }}
+    {{ form_row(form.photoFile, { 'label': 'Photo :' }) }}
+<button class="btn">{{ button_label|default('Save') }}</button>
 {{ form_end(form) }}
+
