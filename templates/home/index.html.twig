@@ -8,7 +8,7 @@
     {% for asset in assets %}
         <a href="{{ path('asset_show',{id: asset.id}) }}">
         <div class="card col-md-4">
-            <img src="{{ vich_uploader_asset(asset, 'photoFile') }}" class="card-img-top" alt="{{ asset.photo }}">
+            <img src="{{ vich_uploader_asset(asset, 'photoFile') }}" class="card-img-top photo-detail" alt="{{ asset.photo }}">
             <div class="card-body">
                 <h5 class="card-title">{{ asset.title }}</h5>
                 <p class="card-text">lieu de découverte : {{ asset.placeOfDiscovery }}</p>
