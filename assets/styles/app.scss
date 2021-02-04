@@ -1,4 +1,4 @@
-
+$police-color: #2a1000;
 $primary: darken(#428bca, 20%);
 
 @import "~bootstrap/scss/bootstrap";
@@ -10,9 +10,11 @@ $primary: darken(#428bca, 20%);
 
 html,
 body {
+    color: $police-color;
     height: 100vh;
     margin: 0;
     padding: 0;
+    font-family: 'Lemonada', cursive;
 }
 
 body {
@@ -29,6 +31,12 @@ a:hover {
     color: black;
     text-decoration: none;
     background-color: #f0efeb;
+}
+
+.card-home {
+    border-color: lightgray;
+    border-width: 5px;
+    border-radius: 6px;
 }
 
 /*asset details*/

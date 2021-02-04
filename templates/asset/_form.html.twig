@@ -4,6 +4,8 @@
     {{ form_row(form.value, { 'label': 'Valeur :' }) }}
      {{ form_row(form.category, { 'label': 'Catégorie :' }) }}
     {{ form_row(form.photoFile, { 'label': 'Photo :' }) }}
-<button class="btn">{{ button_label|default('Sauvegarder') }}</button>
+<div class="d-flex flex-row justify-content-center">
+<button class="m-auto btn btn-primary">{{ button_label|default('Sauvegarder') }}</button>
+</div>
 {{ form_end(form) }}
 

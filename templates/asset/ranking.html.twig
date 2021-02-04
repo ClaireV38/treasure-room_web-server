@@ -12,7 +12,6 @@
                          alt="{{ asset.photo }}">
                     <div class="card-body w-100">
                         <h5 class="card-title">{{ asset.title }}</h5>
-                        <p class="card-text">lieu de découverte : {{ asset.placeOfDiscovery }}</p>
                         <p class="card-text">date de dépot : {{ asset.depositDate  |date("d/m/Y") }}</p>
                         <p class="card-text">valeur : {{ asset.value }} $</p>
                         <p class="card-text">categorie : {{ asset.category.name }}</p>

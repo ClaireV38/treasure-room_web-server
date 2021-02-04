@@ -15,10 +15,10 @@
         </div>
     {% endif %}
 
-    <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-    <label for="inputName">Name</label>
+    <h1 class="h3 mb-3 font-weight-normal">Se connecter</h1>
+    <label for="inputName">Nom</label>
     <input type="text" value="{{ last_username }}" name="name" id="inputName" class="form-control" required autofocus>
-    <label for="inputPassword">Password</label>
+    <label for="inputPassword">Mot de passe</label>
     <input type="password" name="password" id="inputPassword" class="form-control" required>
 
     <input type="hidden" name="_csrf_token"
@@ -35,10 +35,9 @@
             </label>
         </div>
     #}
-
-    <button class="btn btn-lg btn-primary" type="submit">
-        Sign in
-    </button>
+    <div class="d-flex flex-row justify-content-center mt-3">
+    <button class="btn btn-primary" type="submit">ok</button>
+    </div>
 </form>
     </div>
 {% endblock %}

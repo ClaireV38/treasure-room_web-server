@@ -94,6 +94,7 @@ class AssetController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($asset);
+            $asset->setDepositDate(new \DateTime('now'));
             $asset->setOwner($this->getUser());
             $entityManager->flush();
 
@@ -165,6 +166,6 @@ class AssetController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('asset_index');
+        return $this->redirectToRoute('adventurer_index');
     }
 }
