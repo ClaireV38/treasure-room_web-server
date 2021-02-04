@@ -37,9 +37,10 @@ class AssetController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($asset);
+            $asset->setOwner($this->getUser());
             $entityManager->flush();
 
-            return $this->redirectToRoute('asset_index');
+            return $this->redirectToRoute('adventurer_index');
         }
 
         return $this->render('asset/new.html.twig', [
@@ -69,7 +70,7 @@ class AssetController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('asset_index');
+            return $this->redirectToRoute('adventurer_index');
         }
 
         return $this->render('asset/edit.html.twig', [

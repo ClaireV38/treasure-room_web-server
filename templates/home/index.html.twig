@@ -4,6 +4,7 @@
 <div class="container h-100 d-flex flex-column justify-content-around">
     <h1 class="text-center">Bienvenue dans la salle des trésors</h1>
     <h5 class="text-center">les derniers trésors déposés :</h5>
+
     <div class="row">
     {% for asset in assets %}
         <a class="card col-md-4" href="{{ path('asset_show',{id: asset.id}) }}">

@@ -20,21 +20,18 @@ class AssetType extends AbstractType
         $builder
             ->add('title', TextType::class)
             ->add('placeOfDiscovery', TextType::class)
-            ->add('value', MoneyType::class)
-            ->add('owner', EntityType::class,[
-                'class' => User::class,
-                'choice_label' => 'name',
+            ->add('value', MoneyType::class, [
+                'currency' => 'USD',
             ])
-            ->add('category', EntityType::class,[
+            ->add('category', EntityType::class, [
                 'class' => Category::class,
                 'choice_label' => 'name',
             ])
             ->add('photoFile', VichFileType::class, [
-                'required'      => false,
-                'allow_delete'  => true, // not mandatory, default is true
+                'required' => false,
+                'allow_delete' => true, // not mandatory, default is true
                 'download_uri' => true, // not mandatory, default is true
-            ])
-        ;
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)
