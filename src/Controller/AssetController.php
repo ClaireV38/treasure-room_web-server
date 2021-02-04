@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Asset;
 use App\Form\AssetType;
 use App\Repository\AssetRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -46,6 +47,24 @@ class AssetController extends AbstractController
         return $this->render('asset/new.html.twig', [
             'asset' => $asset,
             'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * @Route("/{id}/vote", name="asset_vote", methods={"GET"})
+     */
+    public function voteFor(Asset $asset, EntityManagerInterface  $entityManager): Response
+    {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        if ($this->getUser()->getVotes()->contains($asset)) {
+            $this->getUser()->removeVote($asset);
+        }
+        else {
+            $this->getUser()->addVote($asset);
+        }
+        $entityManager->flush();
+        return $this->json([
+            'hasVotedFor' => $this->getUser()->hasVotedFor($asset)
         ]);
     }
 

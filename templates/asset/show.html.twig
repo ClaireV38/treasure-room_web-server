@@ -32,6 +32,13 @@
                 </tr>
                 </tbody>
             </table>
+            {% if app.user %}
+                <div>
+                    <a id="vote" href="{{ path('asset_vote', {id: asset.id})}}">
+                        <i class="{{ app.user.hasVotedFor(asset) ? 'fas' : 'far' }} fa-heart"></i>
+                    </a>
+                </div>
+            {% endif %}
             <div class="d-flex flex-row justify-content-around">
                 {% if app.user is same as asset.owner %}
             <a class="btn btn-primary" href="{{app.request.headers.get('referer')}}">retour</a>
@@ -46,6 +53,8 @@
             </div>
         </div>
     </div>
-
-
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('vote') }}
 {% endblock %}

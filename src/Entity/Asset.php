@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Repository\AssetRepository;
 use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use Symfony\Component\HttpFoundation\File\File;
@@ -66,6 +68,16 @@ class Asset
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $updatedAt;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=User::class, mappedBy="votes")
+     */
+    private $voters;
+
+    public function __construct()
+    {
+        $this->voters = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -180,5 +192,32 @@ class Asset
     public function getPhotoFile(): ?File
     {
         return $this->photoFile;
+    }
+
+    /**
+     * @return Collection|User[]
+     */
+    public function getVoters(): Collection
+    {
+        return $this->voters;
+    }
+
+    public function addVoter(User $voter): self
+    {
+        if (!$this->voters->contains($voter)) {
+            $this->voters[] = $voter;
+            $voter->addVote($this);
+        }
+
+        return $this;
+    }
+
+    public function removeVoter(User $voter): self
+    {
+        if ($this->voters->removeElement($voter)) {
+            $voter->removeVote($this);
+        }
+
+        return $this;
     }
 }

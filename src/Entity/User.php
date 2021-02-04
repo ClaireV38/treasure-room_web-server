@@ -42,9 +42,28 @@ class User implements UserInterface
      */
     private $assets;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Asset::class, inversedBy="voters")
+     */
+    private $votes;
+
     public function __construct()
     {
         $this->assets = new ArrayCollection();
+        $this->votes = new ArrayCollection();
+    }
+
+    /**
+     * @param Asset $asset
+     * @return bool
+     */
+    public function hasVotedFor(Asset $asset) : bool
+    {
+        if ($this->votes->contains($asset)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public function getId(): ?int
@@ -71,7 +90,7 @@ class User implements UserInterface
      */
     public function getUsername(): string
     {
-        return (string) $this->name;
+        return (string)$this->name;
     }
 
     /**
@@ -98,7 +117,7 @@ class User implements UserInterface
      */
     public function getPassword(): string
     {
-        return (string) $this->password;
+        return (string)$this->password;
     }
 
     public function setPassword(string $password): self
@@ -151,6 +170,30 @@ class User implements UserInterface
                 $asset->setOwner(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Asset[]
+     */
+    public function getVotes(): Collection
+    {
+        return $this->votes;
+    }
+
+    public function addVote(Asset $vote): self
+    {
+        if (!$this->votes->contains($vote)) {
+            $this->votes[] = $vote;
+        }
+
+        return $this;
+    }
+
+    public function removeVote(Asset $vote): self
+    {
+        $this->votes->removeElement($vote);
 
         return $this;
     }
