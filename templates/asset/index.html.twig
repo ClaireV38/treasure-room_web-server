@@ -3,43 +3,41 @@
 {% block title %}Asset index{% endblock %}
 
 {% block body %}
-    <h1>Asset index</h1>
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Title</th>
-                <th>PlaceOfDiscovery</th>
-                <th>DepositDate</th>
-                <th>Value</th>
-                <th>Photo</th>
-                <th>UpdatedAt</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
+    <div class="container h-100">
+        <h1 class="text-center">Inventaire des trésors</h1>
+        <div>
+        <h2 class="text-center m-3">Recherche</h2>
+        {{ form_start(searchCategoryForm) }}
+        {{ form_row(searchCategoryForm.category, {'label': 'par catégorie :'}) }}
+        <button id="index-container-button" class="btn btn-primary">Appliquer</button>
+        {{ form_end(searchCategoryForm) }}
+        {{ form_start(searchOwnerForm) }}
+        {{ form_row(searchOwnerForm.owner, {'label': 'par aventurier :'}) }}
+        <button id="index-container-button" class="btn btn-primary">Appliquer</button>
+        {{ form_end(resetForm) }}
+        {{ form_start(resetForm) }}
+        <button class="mb-3 btn btn-primary">Voir tous les trésors</button>
+        {{ form_end(resetForm) }}
+        </div>
         {% for asset in assets %}
-            <tr>
-                <td>{{ asset.id }}</td>
-                <td>{{ asset.title }}</td>
-                <td>{{ asset.placeOfDiscovery }}</td>
-                <td>{{ asset.depositDate ? asset.depositDate|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ asset.value }}</td>
-                <td>{{ asset.photo }}</td>
-                <td>{{ asset.updatedAt ? asset.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
-                <td>
-                    <a href="{{ path('asset_show', {'id': asset.id}) }}">show</a>
-                    <a href="{{ path('asset_edit', {'id': asset.id}) }}">edit</a>
-                </td>
-            </tr>
+            <a href="{{ path('asset_show',{id: asset.id}) }}">
+                <div class="card w-100 d-md-flex mb-3 p-2 flex-md-row align-items-center justify-content-center">
+                    <img src="{{ vich_uploader_asset(asset, 'photoFile') }}" class="photo-detail"
+                         alt="{{ asset.photo }}">
+                    <div class="card-body w-100">
+                        <h5 class="card-title">{{ asset.title }}</h5>
+                        <p class="card-text">lieu de découverte : {{ asset.placeOfDiscovery }}</p>
+                        <p class="card-text">date de dépot : {{ asset.depositDate  |date("d/m/Y") }}</p>
+                        <p class="card-text">valeur : {{ asset.value }} $</p>
+                        <p class="card-text">categorie : {{ asset.category.name }}</p>
+                        <p class="card-text">propriétaire : {{ asset.owner.name }}</p>
+                    </div>
+                </div>
+            </a>
         {% else %}
-            <tr>
-                <td colspan="8">no records found</td>
-            </tr>
+            <p class="text-center">Aucun trésor ne correspond à votre recherche</p>
         {% endfor %}
-        </tbody>
-    </table>
+    </div>
 
     <a href="{{ path('asset_new') }}">Create new</a>
 {% endblock %}

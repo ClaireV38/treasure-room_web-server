@@ -4,7 +4,12 @@ namespace App\Controller;
 
 use App\Entity\Asset;
 use App\Form\AssetType;
+use App\Form\ResetType;
+use App\Form\SearchByCategoryFormType;
+use App\Form\SearchByOwnerFormType;
 use App\Repository\AssetRepository;
+use App\Repository\CategoryRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,12 +22,50 @@ use Symfony\Component\Routing\Annotation\Route;
 class AssetController extends AbstractController
 {
     /**
-     * @Route("/", name="asset_index", methods={"GET"})
+     * @Route("/", name="asset_index", methods={"GET","POST"})
+     * @param Request $request
+     * @param AssetRepository $assetRepository
+     * @param CategoryRepository $categoryRepository
+     * @param UserRepository $userRepository
+     * @return Response
      */
-    public function index(AssetRepository $assetRepository): Response
+    public function index(
+        Request $request,
+        AssetRepository $assetRepository,
+        CategoryRepository $categoryRepository,
+        UserRepository $userRepository): Response
     {
+        $assets = $assetRepository->findall();
+
+        $resetForm = $this->createForm(ResetType::class);
+        $resetForm->handleRequest($request);
+
+        $searchCategoryForm = $this->createForm(SearchByCategoryFormType::class);
+        $searchCategoryForm->handleRequest($request);
+
+        $searchOwnerForm = $this->createForm(SearchByOwnerFormType::class);
+        $searchOwnerForm->handleRequest($request);
+
+
+        if ($searchOwnerForm->isSubmitted() && $searchOwnerForm->isValid()) {
+            $owner = $searchOwnerForm->getData()['owner'];
+            $assets = $assetRepository->findBy(['owner' => $owner]);
+        }
+
+        if ($searchCategoryForm->isSubmitted() && $searchCategoryForm->isValid()) {
+            $category = $searchCategoryForm->getData()['category'];
+            $assets = $assetRepository->findBy(['category' => $category]);
+        }
+
+        if ($resetForm->isSubmitted() && $resetForm->isValid()) {
+            $assets = $assetRepository->findall();
+        }
+
         return $this->render('asset/index.html.twig', [
-            'assets' => $assetRepository->findAll(),
+            'assets' => $assets,
+             'searchCategoryForm' => $searchCategoryForm->createView(),
+             'searchOwnerForm' => $searchOwnerForm->createView(),
+             'resetForm' => $resetForm->createView(),
         ]);
     }
 
