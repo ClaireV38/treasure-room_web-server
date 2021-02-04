@@ -12,7 +12,7 @@ each adventurer has the possibility to :
 - vote for its favorites assets among the possession of the other adventurers
 - access to the ranking of the votes
 
-#to set up :
+# to set up :
 
 - clone this repository : git clone https://github.com/ClaireV38/checkpoint4_treasure_room.git
 - copy the follwing line : .env : DATABASE_URL=mysql://db_user:db_password@127.0.0.1:3306/db_name. 
