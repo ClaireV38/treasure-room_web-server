@@ -19,6 +19,21 @@ class AssetRepository extends ServiceEntityRepository
         parent::__construct($registry, Asset::class);
     }
 
+     /**
+      * @return Asset[] Returns an array of Asset objects
+      */
+    public function findAllOrderByNbVotes()
+    {
+        return $this->createQueryBuilder('a')
+            ->leftJoin('a.voters', 'v')
+            ->groupBy('a')
+            ->orderBy('COUNT(DISTINCT v)', 'DESC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+
     // /**
     //  * @return Asset[] Returns an array of Asset objects
     //  */

@@ -17,12 +17,12 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/asset")
+ * @Route("/asset", name="asset_")
  */
 class AssetController extends AbstractController
 {
     /**
-     * @Route("/", name="asset_index", methods={"GET","POST"})
+     * @Route("/", name="index", methods={"GET","POST"})
      * @param Request $request
      * @param AssetRepository $assetRepository
      * @param CategoryRepository $categoryRepository
@@ -48,7 +48,6 @@ class AssetController extends AbstractController
 
 
         if ($searchOwnerForm->isSubmitted() && $searchOwnerForm->isValid()) {
-            var_dump('coucou');
             $owner = $searchOwnerForm->getData()['owner'];
             $assets = $assetRepository->findBy(['owner' => $owner]);
         }
@@ -63,7 +62,7 @@ class AssetController extends AbstractController
         }
 
         return $this->render('asset/index.html.twig', [
-            'assets' => $assets,
+             'assets' => $assets,
              'searchCategoryForm' => $searchCategoryForm->createView(),
              'searchOwnerForm' => $searchOwnerForm->createView(),
              'resetForm' => $resetForm->createView(),
@@ -71,7 +70,20 @@ class AssetController extends AbstractController
     }
 
     /**
-     * @Route("/new", name="asset_new", methods={"GET","POST"})
+     * @Route("/ranking", name="ranking", methods={"GET"})
+     * @param AssetRepository $assetRepository
+     * @return Response
+     */
+    public function ranking(AssetRepository $assetRepository): Response
+    {
+        $assets = $assetRepository->findAllOrderByNbVotes();
+        return $this->render('asset/ranking.html.twig', [
+            'assets' => $assets,
+        ]);
+    }
+
+    /**
+     * @Route("/new", name="new", methods={"GET","POST"})
      */
     public function new(Request $request): Response
     {
@@ -95,7 +107,7 @@ class AssetController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/vote", name="asset_vote", methods={"GET"})
+     * @Route("/{id}/vote", name="vote", methods={"GET"})
      */
     public function voteFor(Asset $asset, EntityManagerInterface  $entityManager): Response
     {
@@ -113,7 +125,7 @@ class AssetController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="asset_show", methods={"GET"})
+     * @Route("/{id}", name="show", methods={"GET"})
      */
     public function show(Asset $asset): Response
     {
@@ -123,7 +135,7 @@ class AssetController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/edit", name="asset_edit", methods={"GET","POST"})
+     * @Route("/{id}/edit", name="edit", methods={"GET","POST"})
      */
     public function edit(Request $request, Asset $asset): Response
     {
@@ -143,7 +155,7 @@ class AssetController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="asset_delete", methods={"DELETE"})
+     * @Route("/{id}", name="delete", methods={"DELETE"})
      */
     public function delete(Request $request, Asset $asset): Response
     {
