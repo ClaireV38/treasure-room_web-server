@@ -32,7 +32,7 @@
                 </tr>
                 </tbody>
             </table>
-            {% if app.user %}
+            {% if app.user and app.user is not same as asset.owner %}
                 <div>
                     <a id="vote" href="{{ path('asset_vote', {id: asset.id})}}">
                         <i class="{{ app.user.hasVotedFor(asset) ? 'fas' : 'far' }} fa-heart"></i>

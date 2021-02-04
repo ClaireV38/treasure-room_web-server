@@ -25,6 +25,12 @@ main {
     flex-grow: 1;
 }
 
+a:hover {
+    color: black;
+    text-decoration: none;
+    background-color: #f0efeb;
+}
+
 /*asset details*/
 .photo-detail {
     width: 100%;
