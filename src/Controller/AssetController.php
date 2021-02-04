@@ -48,6 +48,7 @@ class AssetController extends AbstractController
 
 
         if ($searchOwnerForm->isSubmitted() && $searchOwnerForm->isValid()) {
+            var_dump('coucou');
             $owner = $searchOwnerForm->getData()['owner'];
             $assets = $assetRepository->findBy(['owner' => $owner]);
         }

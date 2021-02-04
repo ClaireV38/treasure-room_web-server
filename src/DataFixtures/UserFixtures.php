@@ -13,7 +13,7 @@ class UserFixtures extends Fixture
      * nb objects to create
      * @var int
      */
-    const NB_OBJECT = 10;
+    const ADVENTURERS = ['Jason','Ulysse','Helene','Salakis','Heracles','Achille','Egée','Oedipe','Persée','Sirtakis'];
 
     private $passwordEncoder;
 
@@ -27,9 +27,9 @@ class UserFixtures extends Fixture
     {
 
         // Création d’un utilisateur de type “contributeur” (= auteur)
-        for ($i = 1; $i <= self::NB_OBJECT; $i++) {
+        foreach (SELF::ADVENTURERS as $key => $hero) {
             $adventurer = new User();
-            $adventurer->setName('adventurer' . $i);
+            $adventurer->setName($hero);
             $adventurer->setRoles(['ROLE_USER']);
             $adventurer->setPassword($this->passwordEncoder->encodePassword(
                 $adventurer,
@@ -37,7 +37,7 @@ class UserFixtures extends Fixture
             ));
 
             $manager->persist($adventurer);
-            $this->addReference('adventurer_' . $i, $adventurer);
+            $this->addReference('adventurer_' . ($key + 1), $adventurer);
         }
 
         // Création d’un utilisateur de type “administrateur”

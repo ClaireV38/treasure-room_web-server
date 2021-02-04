@@ -20,7 +20,30 @@ class AssetFixtures extends Fixture implements DependentFixtureInterface
      **/
     public const NB_OBJECT = 30;
 
-    const PHOTOS = ['amethyst.jpg', 'buddha.jpg', 'crystal.jpg', 'diamond1.jpg', 'diamond2.jpg', 'flying-carpet.png', 'sculpture.jpg', 'stone.jpg', 'throne.png'];
+    const STONESPHOTOS = [
+        'amethyst.jpg',
+        'crystal.jpg',
+        'diamond1.jpg',
+        'diamond2.jpg',
+        'stones.jpg',
+
+    ];
+
+    const SCULPTURESPHOTOS = [
+        'buddha.jpg',
+        'throne.png',
+        'sculpture.jpg',
+        'flying-carpet.png',
+        'angel.jpg',
+        'skull.jpg',
+    ];
+
+    const COINSPHOTOS = [
+        'treasure.jpg',
+        'vintage.jpg',
+        'gold.jpg',
+        'bitcoin.jpg',
+    ];
 
     public function getDependencies()
     {
@@ -30,7 +53,7 @@ class AssetFixtures extends Fixture implements DependentFixtureInterface
     public function load(ObjectManager $manager)
     {
         $faker  =  Faker\Factory::create('fr_FR');
-        for ($i = 1; $i <= self::NB_OBJECT; $i++) {
+        for ($i = 1; $i <= 10; $i++) {
             $asset= new Asset();
             $asset->setTitle($faker->sentence(2, true));
             $asset->setPlaceOfDiscovery($faker->sentence(3, true));
@@ -38,10 +61,40 @@ class AssetFixtures extends Fixture implements DependentFixtureInterface
             $asset->setValue(
                 $faker->randomFloat($nbMaxDecimals = 2, $min = 0, $max = NULL)
             );
-            $asset->setPhoto(SELF::PHOTOS[array_rand (SELF::PHOTOS  , 1 )]);
+            $asset->setPhoto(SELF::STONESPHOTOS[array_rand (SELF::STONESPHOTOS  , 1 )]);
             $asset->setUpdatedAt(new DateTime('now'));
-            $asset->setOwner($this->getReference('adventurer_' . rand(1, UserFixtures::NB_OBJECT)));
-            $asset->setCategory($this->getReference('category_' . rand(1, count(CategoryFixtures::CATEGORIES)-1)));
+            $asset->setOwner($this->getReference('adventurer_' . rand(1, count(UserFixtures::ADVENTURERS))));
+            $asset->setCategory($this->getReference('category_1'));
+            $manager->persist($asset);
+            $this->addReference('asset_' . $i, $asset);
+        }
+        for ($i = 11; $i <= 20; $i++) {
+            $asset= new Asset();
+            $asset->setTitle($faker->sentence(2, true));
+            $asset->setPlaceOfDiscovery($faker->sentence(3, true));
+            $asset->setDepositDate(new DateTime('now'));
+            $asset->setValue(
+                $faker->randomFloat($nbMaxDecimals = 2, $min = 0, $max = NULL)
+            );
+            $asset->setPhoto(SELF::SCULPTURESPHOTOS[array_rand (SELF::SCULPTURESPHOTOS  , 1 )]);
+            $asset->setUpdatedAt(new DateTime('now'));
+            $asset->setOwner($this->getReference('adventurer_' . rand(1, count(UserFixtures::ADVENTURERS))));
+            $asset->setCategory($this->getReference('category_2'));
+            $manager->persist($asset);
+            $this->addReference('asset_' . $i, $asset);
+        }
+        for ($i = 21; $i <= SELF::NB_OBJECT; $i++) {
+            $asset= new Asset();
+            $asset->setTitle($faker->sentence(2, true));
+            $asset->setPlaceOfDiscovery($faker->sentence(3, true));
+            $asset->setDepositDate(new DateTime('now'));
+            $asset->setValue(
+                $faker->randomFloat($nbMaxDecimals = 2, $min = 0, $max = NULL)
+            );
+            $asset->setPhoto(SELF::COINSPHOTOS[array_rand (SELF::COINSPHOTOS  , 1 )]);
+            $asset->setUpdatedAt(new DateTime('now'));
+            $asset->setOwner($this->getReference('adventurer_' . rand(1, count(UserFixtures::ADVENTURERS))));
+            $asset->setCategory($this->getReference('category_3'));
             $manager->persist($asset);
             $this->addReference('asset_' . $i, $asset);
         }
