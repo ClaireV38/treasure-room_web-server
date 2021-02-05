@@ -26,14 +26,14 @@ class Asset
 
     /**
      * @ORM\Column(type="string", length=200, nullable=true)
-     * @Assert\NotBlank(message="Veuillez saisir votre nom."")
-     * @Assert\Length(max="200", maxMessage="L'email ne doit pas exceder 200 caractères.")
+     * @Assert\NotBlank(message="Veuillez saisir votre nom.")
+     * @Assert\Length(max="50", maxMessage="Le titre ne doit pas exceder 50 caractères.")
      */
     private $title;
 
     /**
      * @ORM\Column(type="string", length=200, nullable=true)
-     * @Assert\Length(max="200", maxMessage="L'email ne doit pas exceder 200 caractères.")
+     * @Assert\Length(max="200", maxMessage="Le massage ne doit pas exceder 200 caractères.")
      */
     private $placeOfDiscovery;
 
