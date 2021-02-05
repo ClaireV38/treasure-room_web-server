@@ -97,7 +97,7 @@ class AssetController extends AbstractController
             $asset->setDepositDate(new \DateTime('now'));
             $asset->setOwner($this->getUser());
             $entityManager->flush();
-            $this->addFlash('success', 'le trésor a bien été ajoutégit ');
+            $this->addFlash('success', 'le trésor a bien été ajouté ');
 
             return $this->redirectToRoute('adventurer_index');
         }
