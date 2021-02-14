@@ -44,6 +44,7 @@ class Asset
 
     /**
      * @ORM\Column(type="float", nullable=true)
+     * @Assert\Positive(message="La valeur doit être prositive")
      */
     private $value;
 

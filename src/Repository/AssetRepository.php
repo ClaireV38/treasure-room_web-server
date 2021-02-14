@@ -19,9 +19,9 @@ class AssetRepository extends ServiceEntityRepository
         parent::__construct($registry, Asset::class);
     }
 
-     /**
-      * @return Asset[] Returns an array of Asset objects
-      */
+    /**
+     * @return Asset[] Returns an array of Asset objects
+     */
     public function findAllOrderByNbVotes()
     {
         return $this->createQueryBuilder('a')
@@ -29,27 +29,26 @@ class AssetRepository extends ServiceEntityRepository
             ->groupBy('a')
             ->orderBy('COUNT(DISTINCT v)', 'DESC')
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
     }
 
 
-    // /**
-    //  * @return Asset[] Returns an array of Asset objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @param $category
+     * @param $owner
+     * @return Asset[] Returns an array of Asset objects
+     */
+    public function findByCategoryOwner($category, $owner)
     {
         return $this->createQueryBuilder('a')
-            ->andWhere('a.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('a.id', 'ASC')
-            ->setMaxResults(10)
+            ->andWhere('a.category = :category')
+            ->setParameter('category', $category)
+            ->andWhere('a.owner = :owner')
+            ->setParameter('owner', $owner)
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
     }
-    */
+
 
     /*
     public function findOneBySomeField($value): ?Asset
@@ -58,8 +57,7 @@ class AssetRepository extends ServiceEntityRepository
             ->andWhere('a.exampleField = :val')
             ->setParameter('val', $value)
             ->getQuery()
-            ->getOneOrNullResult()
-        ;
+            ->getOneOrNullResult();
     }
-    */
+*/
 }

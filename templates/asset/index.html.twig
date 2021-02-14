@@ -7,17 +7,11 @@
         <h1 class="text-center">Inventaire des trésors</h1>
         <div>
         <h2 class="text-center m-3">Recherche</h2>
-        {{ form_start(searchCategoryForm) }}
-        {{ form_row(searchCategoryForm.category, {'label': 'par catégorie :'}) }}
+        {{ form_start(searchForm) }}
+        {{ form_row(searchForm.category, {'label': 'par catégorie :'}) }}
+        {{ form_row(searchForm.owner, {'label': 'par aventurier :'}) }}
         <button id="index-container-button" class="btn btn-primary">Appliquer</button>
-        {{ form_end(searchCategoryForm) }}
-        {{ form_start(searchOwnerForm) }}
-        {{ form_row(searchOwnerForm.owner, {'label': 'par aventurier :'}) }}
-        <button id="index-container-button" class="btn btn-primary">Appliquer</button>
-        {{ form_end(searchOwnerForm) }}
-        {{ form_start(resetForm) }}
-        <button class="mb-3 btn btn-primary">Voir tous les trésors</button>
-        {{ form_end(resetForm) }}
+        {{ form_end(searchForm) }}
         </div>
         {% for asset in assets %}
             <a href="{{ path('asset_show',{id: asset.id}) }}">
