@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Data\SearchData;
 use App\Entity\Asset;
 use App\Form\AssetType;
 use App\Form\ResetType;
@@ -37,28 +38,31 @@ class AssetController extends AbstractController
     {
         $assets = $assetRepository->findall();
 
+        $data = new SearchData();
         $resetForm = $this->createForm(ResetType::class);
         $resetForm->handleRequest($request);
 
-        $searchCategoryForm = $this->createForm(SearchByCategoryFormType::class);
+        $searchCategoryForm = $this->createForm(SearchByCategoryFormType::class, $data);
         $searchCategoryForm->handleRequest($request);
 
-        $searchOwnerForm = $this->createForm(SearchByOwnerFormType::class);
+        $searchOwnerForm = $this->createForm(SearchByOwnerFormType::class, $data);
         $searchOwnerForm->handleRequest($request);
 
 
         if ($searchOwnerForm->isSubmitted() && $searchOwnerForm->isValid()) {
-            $owner = $searchOwnerForm->getData()['owner'];
-            $assets = $assetRepository->findBy(['owner' => $owner]);
+            if ($data->owner) {
+                $assets = $assetRepository->findBy(['owner' => $data->owner]);
+            } else {
+                $assets = $assetRepository->findAll();
+            }
         }
 
         if ($searchCategoryForm->isSubmitted() && $searchCategoryForm->isValid()) {
-            $category = $searchCategoryForm->getData()['category'];
-            $assets = $assetRepository->findBy(['category' => $category]);
-        }
-
-        if ($resetForm->isSubmitted() && $resetForm->isValid()) {
-            $assets = $assetRepository->findall();
+            if ($data->category) {
+                $assets = $assetRepository->findBy(['category' => $data->category]);
+            } else {
+                $assets = $assetRepository->findAll();
+            }
         }
 
         return $this->render('asset/index.html.twig', [

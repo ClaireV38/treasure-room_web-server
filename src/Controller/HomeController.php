@@ -14,7 +14,7 @@ class HomeController extends AbstractController
      */
     public function index(AssetRepository $assetRepository): Response
     {
-        $lastAssets = $assetRepository->findBy([], ['depositDate' => 'ASC'],3);
+        $lastAssets = $assetRepository->findBy([], ['depositDate' => 'DESC'],3);
         return $this->render('home/index.html.twig', [
             'assets' => $lastAssets
         ]);

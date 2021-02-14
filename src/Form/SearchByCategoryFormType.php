@@ -2,6 +2,7 @@
 
 namespace App\Form;
 
+use App\Data\SearchData;
 use App\Entity\Asset;
 use App\Entity\Category;
 use App\Repository\ApplicantRepository;
@@ -15,29 +16,29 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class SearchByCategoryFormType extends AbstractType
 {
-    /**
-     * @var CategoryRepository
-     */
-    private $categoryRepository;
-
-    public function __construct(CategoryRepository $categoryRepository, UserRepository $userRepository)
-    {
-        $this->categoryRepository = $categoryRepository;
-    }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $categories = $this->categoryRepository->findAll();
-            $builder
-            ->add('category', ChoiceType::class, [
-                'choices' => [$categories],
-                'choice_label' => 'name'
-            ]);
+        $builder
+        ->add('category', EntityType::class, [
+            'choice_label' => 'name',
+            'required' => false,
+            'class' => Category::class,
+            'expanded' => false,
+            'multiple' => false,
+            'placeholder' => 'Tout voir',
+        ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
+            'data_class' => SearchData::class,
         ]);
+    }
+
+    public function getBlockPrefix()
+    {
+        return '';
     }
 }

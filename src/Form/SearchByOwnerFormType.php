@@ -2,8 +2,10 @@
 
 namespace App\Form;
 
+use App\Data\SearchData;
 use App\Entity\Asset;
 use App\Entity\Category;
+use App\Entity\User;
 use App\Repository\ApplicantRepository;
 use App\Repository\CategoryRepository;
 use App\Repository\UserRepository;
@@ -16,29 +18,29 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class SearchByOwnerFormType extends AbstractType
 {
 
-    /**
-     * @var UserRepository
-     */
-    private $userRepository;
-
-    public function __construct(UserRepository $userRepository)
-    {
-        $this->userRepository = $userRepository;
-    }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $owners = $this->userRepository->findAll();
-            $builder
-            ->add('owner', ChoiceType::class, [
-                'choices' => [$owners],
-                'choice_label' => 'name'
+        $builder
+            ->add('owner', EntityType::class, [
+                'choice_label' => 'name',
+                'required' => false,
+                'class' => User::class,
+                'expanded' => false,
+                'multiple' => false,
+                'placeholder' => 'Tout voir',
             ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
+            'data_class' => SearchData::class,
         ]);
+    }
+
+    public function getBlockPrefix()
+    {
+        return '';
     }
 }
