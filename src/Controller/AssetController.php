@@ -8,6 +8,7 @@ use App\Form\AssetType;
 use App\Form\ResetType;
 use App\Form\SearchByCategoryFormType;
 use App\Form\SearchByOwnerFormType;
+use App\Form\SearchFormType;
 use App\Repository\AssetRepository;
 use App\Repository\CategoryRepository;
 use App\Repository\UserRepository;
@@ -39,37 +40,24 @@ class AssetController extends AbstractController
         $assets = $assetRepository->findall();
 
         $data = new SearchData();
-        $resetForm = $this->createForm(ResetType::class);
-        $resetForm->handleRequest($request);
+        $searchForm = $this->createForm(SearchFormType::class, $data);
+        $searchForm->handleRequest($request);
 
-        $searchCategoryForm = $this->createForm(SearchByCategoryFormType::class, $data);
-        $searchCategoryForm->handleRequest($request);
-
-        $searchOwnerForm = $this->createForm(SearchByOwnerFormType::class, $data);
-        $searchOwnerForm->handleRequest($request);
-
-
-        if ($searchOwnerForm->isSubmitted() && $searchOwnerForm->isValid()) {
-            if ($data->owner) {
+        if ($searchForm->isSubmitted() && $searchForm->isValid()) {
+            if ($data->category && $data->owner) {
+                $assets = $assetRepository->findByCategoryOwner($data->category,$data->owner);
+            } else if ($data->category) {
+                $assets = $assetRepository->findBy(['category' => $data->category]);
+            } else if ($data->owner) {
                 $assets = $assetRepository->findBy(['owner' => $data->owner]);
             } else {
-                $assets = $assetRepository->findAll();
-            }
-        }
-
-        if ($searchCategoryForm->isSubmitted() && $searchCategoryForm->isValid()) {
-            if ($data->category) {
-                $assets = $assetRepository->findBy(['category' => $data->category]);
-            } else {
-                $assets = $assetRepository->findAll();
+                $assets = $assetRepository->findAll();git
             }
         }
 
         return $this->render('asset/index.html.twig', [
              'assets' => $assets,
-             'searchCategoryForm' => $searchCategoryForm->createView(),
-             'searchOwnerForm' => $searchOwnerForm->createView(),
-             'resetForm' => $resetForm->createView(),
+             'searchForm' => $searchForm->createView(),
         ]);
     }
 

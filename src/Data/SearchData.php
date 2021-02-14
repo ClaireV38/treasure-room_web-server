@@ -4,6 +4,7 @@
 namespace App\Data;
 
 use App\Entity\Category;
+use App\Entity\User;
 
 class SearchData
 {

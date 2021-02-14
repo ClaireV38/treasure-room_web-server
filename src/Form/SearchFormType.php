@@ -15,21 +15,29 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class SearchByOwnerFormType extends AbstractType
+class SearchFormType extends AbstractType
 {
-
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('owner', EntityType::class, [
-                'choice_label' => 'name',
-                'required' => false,
-                'class' => User::class,
-                'expanded' => false,
-                'multiple' => false,
-                'placeholder' => 'Tout voir',
-            ]);
+        ->add('category', EntityType::class, [
+            'choice_label' => 'name',
+            'required' => false,
+            'class' => Category::class,
+            'expanded' => false,
+            'multiple' => false,
+            'placeholder' => 'Tout voir',
+        ])
+        ->add('owner', EntityType::class, [
+        'choice_label' => 'name',
+        'required' => false,
+        'class' => User::class,
+        'expanded' => false,
+        'multiple' => false,
+        'placeholder' => 'Tout voir',
+        ])
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver)
