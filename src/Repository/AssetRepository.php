@@ -19,22 +19,36 @@ class AssetRepository extends ServiceEntityRepository
         parent::__construct($registry, Asset::class);
     }
 
-    // /**
-    //  * @return Asset[] Returns an array of Asset objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @return Asset[] Returns an array of Asset objects
+     */
+    public function findAllOrderByNbVotes()
     {
         return $this->createQueryBuilder('a')
-            ->andWhere('a.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('a.id', 'ASC')
-            ->setMaxResults(10)
+            ->leftJoin('a.voters', 'v')
+            ->groupBy('a')
+            ->orderBy('COUNT(DISTINCT v)', 'DESC')
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
     }
-    */
+
+
+    /**
+     * @param $category
+     * @param $owner
+     * @return Asset[] Returns an array of Asset objects
+     */
+    public function findByCategoryOwner($category, $owner)
+    {
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.category = :category')
+            ->setParameter('category', $category)
+            ->andWhere('a.owner = :owner')
+            ->setParameter('owner', $owner)
+            ->getQuery()
+            ->getResult();
+    }
+
 
     /*
     public function findOneBySomeField($value): ?Asset
@@ -43,8 +57,7 @@ class AssetRepository extends ServiceEntityRepository
             ->andWhere('a.exampleField = :val')
             ->setParameter('val', $value)
             ->getQuery()
-            ->getOneOrNullResult()
-        ;
+            ->getOneOrNullResult();
     }
-    */
+*/
 }

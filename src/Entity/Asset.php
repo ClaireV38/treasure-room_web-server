@@ -7,6 +7,7 @@ use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use Symfony\Component\HttpFoundation\File\File;
 
@@ -25,11 +26,14 @@ class Asset
 
     /**
      * @ORM\Column(type="string", length=200, nullable=true)
+     * @Assert\NotBlank(message="Veuillez saisir votre nom.")
+     * @Assert\Length(max="50", maxMessage="Le titre ne doit pas exceder 50 caractères.")
      */
     private $title;
 
     /**
      * @ORM\Column(type="string", length=200, nullable=true)
+     * @Assert\Length(max="200", maxMessage="Le massage ne doit pas exceder 200 caractères.")
      */
     private $placeOfDiscovery;
 
@@ -40,6 +44,7 @@ class Asset
 
     /**
      * @ORM\Column(type="float", nullable=true)
+     * @Assert\Positive(message="La valeur doit être prositive")
      */
     private $value;
 
@@ -50,7 +55,13 @@ class Asset
 
     /**
      * @Vich\UploadableField(mapping="photo_file", fileNameProperty="photo")
-     * @var File
+     * @var File|Null
+     * @Assert\File(
+     * maxSize="2M",
+     * maxSizeMessage="Le fichier excède 2Mo.",
+     * mimeTypes={"image/png", "image/jpeg", "image/jpg"},
+     * mimeTypesMessage= "formats autorisés: png, jpeg, jpg"
+     * )
      */
     private $photoFile;
 

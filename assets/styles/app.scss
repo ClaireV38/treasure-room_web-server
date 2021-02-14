@@ -1,4 +1,4 @@
-
+$police-color: #2a1000;
 $primary: darken(#428bca, 20%);
 
 @import "~bootstrap/scss/bootstrap";
@@ -10,9 +10,11 @@ $primary: darken(#428bca, 20%);
 
 html,
 body {
+    color: $police-color;
     height: 100vh;
     margin: 0;
     padding: 0;
+    font-family: 'Lobster', cursive;
 }
 
 body {
@@ -31,6 +33,12 @@ a:hover {
     background-color: #f0efeb;
 }
 
+.card-home {
+    border-color: lightgray;
+    border-width: 5px;
+    border-radius: 6px;
+}
+
 /*asset details*/
 .photo-detail {
     width: 100%;
@@ -39,15 +47,19 @@ a:hover {
     margin: auto;
 }
 
+form {
+    margin-bottom: 20px;
+}
+
 @media (min-width: 768px) {
-    form[name="search_by_category_form"] {
+    form {
         display: flex;
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
-        width: 60%;
+        min-width: 100%;
         margin: auto;
-        margin-bottom: 3px;
+        margin-bottom: 20px;
         .form-group {
             display: flex;
             flex-direction: row;

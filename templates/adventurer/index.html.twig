@@ -6,7 +6,7 @@
         <div class="d-flex flex-row justify-content-center mb-2">
             <a class="btn btn-primary" href="{{ path('asset_new') }}">Ajouter un trésor</a>
         </div>
-        <h5 class="text-center">Voici vos trésors stockées dans la salle :</h5>
+        <h5 class="text-center">Voici vos trésors déposés dans la salle :</h5>
         {% for asset in assets %}
             <a href="{{ path('asset_show',{id: asset.id}) }}">
                 <div class="card w-100 d-md-flex mb-3 p-2 flex-md-row align-items-center justify-content-center">

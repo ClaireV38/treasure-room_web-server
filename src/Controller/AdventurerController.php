@@ -17,7 +17,7 @@ class AdventurerController extends AbstractController
     public function index(AssetRepository $assetRepository): Response
     {
         $adventurer = $this->getUser();
-        $adventurerAssets = $assetRepository->findBy(['owner' => $adventurer], ['depositDate' => 'DESC']);
+        $adventurerAssets = $assetRepository->findBy(['owner' => $adventurer], ['id' => 'DESC']);
         return $this->render('adventurer/index.html.twig', [
             'assets' => $adventurerAssets
         ]);

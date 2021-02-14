@@ -30,6 +30,10 @@
                     <th>Catégorie</th>
                     <td>{{ asset.category.name }}</td>
                 </tr>
+                <tr>
+                    <th>Nombre de votes</th>
+                    <td>{{ asset.voters |length }}</td>
+                </tr>
                 </tbody>
             </table>
             {% if app.user and app.user is not same as asset.owner %}

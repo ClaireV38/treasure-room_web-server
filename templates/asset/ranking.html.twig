@@ -4,15 +4,7 @@
 
 {% block body %}
     <div class="container h-100">
-        <h1 class="text-center">Inventaire des trésors</h1>
-        <div>
-        <h2 class="text-center m-3">Recherche</h2>
-        {{ form_start(searchForm) }}
-        {{ form_row(searchForm.category, {'label': 'par catégorie :'}) }}
-        {{ form_row(searchForm.owner, {'label': 'par aventurier :'}) }}
-        <button id="index-container-button" class="btn btn-primary">Appliquer</button>
-        {{ form_end(searchForm) }}
-        </div>
+        <h1 class="text-center">Classement par votes</h1>
         {% for asset in assets %}
             <a href="{{ path('asset_show',{id: asset.id}) }}">
                 <div class="card w-100 d-md-flex mb-3 p-2 flex-md-row align-items-center justify-content-center">
@@ -32,6 +24,5 @@
             <p class="text-center">Aucun trésor ne correspond à votre recherche</p>
         {% endfor %}
     </div>
-
     <a href="{{ path('asset_new') }}">Create new</a>
 {% endblock %}

@@ -2,11 +2,13 @@
 
 namespace App\Controller;
 
+use App\Data\SearchData;
 use App\Entity\Asset;
 use App\Form\AssetType;
 use App\Form\ResetType;
 use App\Form\SearchByCategoryFormType;
 use App\Form\SearchByOwnerFormType;
+use App\Form\SearchFormType;
 use App\Repository\AssetRepository;
 use App\Repository\CategoryRepository;
 use App\Repository\UserRepository;
@@ -17,12 +19,12 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/asset")
+ * @Route("/asset", name="asset_")
  */
 class AssetController extends AbstractController
 {
     /**
-     * @Route("/", name="asset_index", methods={"GET","POST"})
+     * @Route("/", name="index", methods={"GET","POST"})
      * @param Request $request
      * @param AssetRepository $assetRepository
      * @param CategoryRepository $categoryRepository
@@ -37,40 +39,43 @@ class AssetController extends AbstractController
     {
         $assets = $assetRepository->findall();
 
-        $resetForm = $this->createForm(ResetType::class);
-        $resetForm->handleRequest($request);
+        $data = new SearchData();
+        $searchForm = $this->createForm(SearchFormType::class, $data);
+        $searchForm->handleRequest($request);
 
-        $searchCategoryForm = $this->createForm(SearchByCategoryFormType::class);
-        $searchCategoryForm->handleRequest($request);
-
-        $searchOwnerForm = $this->createForm(SearchByOwnerFormType::class);
-        $searchOwnerForm->handleRequest($request);
-
-
-        if ($searchOwnerForm->isSubmitted() && $searchOwnerForm->isValid()) {
-            $owner = $searchOwnerForm->getData()['owner'];
-            $assets = $assetRepository->findBy(['owner' => $owner]);
-        }
-
-        if ($searchCategoryForm->isSubmitted() && $searchCategoryForm->isValid()) {
-            $category = $searchCategoryForm->getData()['category'];
-            $assets = $assetRepository->findBy(['category' => $category]);
-        }
-
-        if ($resetForm->isSubmitted() && $resetForm->isValid()) {
-            $assets = $assetRepository->findall();
+        if ($searchForm->isSubmitted() && $searchForm->isValid()) {
+            if ($data->category && $data->owner) {
+                $assets = $assetRepository->findByCategoryOwner($data->category,$data->owner);
+            } else if ($data->category) {
+                $assets = $assetRepository->findBy(['category' => $data->category]);
+            } else if ($data->owner) {
+                $assets = $assetRepository->findBy(['owner' => $data->owner]);
+            } else {
+                $assets = $assetRepository->findAll();
+            }
         }
 
         return $this->render('asset/index.html.twig', [
-            'assets' => $assets,
-             'searchCategoryForm' => $searchCategoryForm->createView(),
-             'searchOwnerForm' => $searchOwnerForm->createView(),
-             'resetForm' => $resetForm->createView(),
+             'assets' => $assets,
+             'searchForm' => $searchForm->createView(),
         ]);
     }
 
     /**
-     * @Route("/new", name="asset_new", methods={"GET","POST"})
+     * @Route("/ranking", name="ranking", methods={"GET"})
+     * @param AssetRepository $assetRepository
+     * @return Response
+     */
+    public function ranking(AssetRepository $assetRepository): Response
+    {
+        $assets = $assetRepository->findAllOrderByNbVotes();
+        return $this->render('asset/ranking.html.twig', [
+            'assets' => $assets,
+        ]);
+    }
+
+    /**
+     * @Route("/new", name="new", methods={"GET","POST"})
      */
     public function new(Request $request): Response
     {
@@ -81,8 +86,10 @@ class AssetController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($asset);
+            $asset->setDepositDate(new \DateTime('now'));
             $asset->setOwner($this->getUser());
             $entityManager->flush();
+            $this->addFlash('success', 'le trésor a bien été ajouté ');
 
             return $this->redirectToRoute('adventurer_index');
         }
@@ -94,7 +101,7 @@ class AssetController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/vote", name="asset_vote", methods={"GET"})
+     * @Route("/{id}/vote", name="vote", methods={"GET"})
      */
     public function voteFor(Asset $asset, EntityManagerInterface  $entityManager): Response
     {
@@ -112,7 +119,7 @@ class AssetController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="asset_show", methods={"GET"})
+     * @Route("/{id}", name="show", methods={"GET"})
      */
     public function show(Asset $asset): Response
     {
@@ -122,7 +129,7 @@ class AssetController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/edit", name="asset_edit", methods={"GET","POST"})
+     * @Route("/{id}/edit", name="edit", methods={"GET","POST"})
      */
     public function edit(Request $request, Asset $asset): Response
     {
@@ -142,7 +149,7 @@ class AssetController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="asset_delete", methods={"DELETE"})
+     * @Route("/{id}", name="delete", methods={"DELETE"})
      */
     public function delete(Request $request, Asset $asset): Response
     {
@@ -152,6 +159,6 @@ class AssetController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('asset_index');
+        return $this->redirectToRoute('adventurer_index');
     }
 }
