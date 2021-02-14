@@ -51,7 +51,7 @@ class AssetController extends AbstractController
             } else if ($data->owner) {
                 $assets = $assetRepository->findBy(['owner' => $data->owner]);
             } else {
-                $assets = $assetRepository->findAll();git
+                $assets = $assetRepository->findAll();
             }
         }
 
