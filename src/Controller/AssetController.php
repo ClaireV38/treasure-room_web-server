@@ -104,8 +104,8 @@ class AssetController extends AbstractController
      */
     public function show(Asset $asset): Response
     {
-        return $this->render('asset/show.html.twig', [
-            'asset' => $asset,
+        return $this->json($asset, 200, [], [
+            'groups' => 'asset:read'
         ]);
     }
 
