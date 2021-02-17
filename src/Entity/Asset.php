@@ -7,6 +7,7 @@ use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use Symfony\Component\HttpFoundation\File\File;
@@ -21,6 +22,7 @@ class Asset
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups("asset:read")
      */
     private $id;
 
@@ -28,28 +30,33 @@ class Asset
      * @ORM\Column(type="string", length=200, nullable=true)
      * @Assert\NotBlank(message="Veuillez saisir votre nom.")
      * @Assert\Length(max="50", maxMessage="Le titre ne doit pas exceder 50 caractères.")
+     * @Groups("asset:read")
      */
     private $title;
 
     /**
      * @ORM\Column(type="string", length=200, nullable=true)
      * @Assert\Length(max="200", maxMessage="Le massage ne doit pas exceder 200 caractères.")
+     * @Groups("asset:read")
      */
     private $placeOfDiscovery;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
+     * @Groups("asset:read")
      */
     private $depositDate;
 
     /**
      * @ORM\Column(type="float", nullable=true)
      * @Assert\Positive(message="La valeur doit être prositive")
+     * @Groups("asset:read")
      */
     private $value;
 
     /**
      * @ORM\Column(type="string", length=200, nullable=true)
+     * @Groups("asset:read")
      */
     private $photo;
 

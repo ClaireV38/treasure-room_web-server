@@ -5,9 +5,6 @@ namespace App\Controller;
 use App\Data\SearchData;
 use App\Entity\Asset;
 use App\Form\AssetType;
-use App\Form\ResetType;
-use App\Form\SearchByCategoryFormType;
-use App\Form\SearchByOwnerFormType;
 use App\Form\SearchFormType;
 use App\Repository\AssetRepository;
 use App\Repository\CategoryRepository;
@@ -17,6 +14,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\Exception\ExceptionInterface;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 /**
  * @Route("/asset", name="asset_")
@@ -24,40 +23,28 @@ use Symfony\Component\Routing\Annotation\Route;
 class AssetController extends AbstractController
 {
     /**
-     * @Route("/", name="index", methods={"GET","POST"})
+     * @Route("/", name="index", methods={"GET"})
      * @param Request $request
      * @param AssetRepository $assetRepository
      * @param CategoryRepository $categoryRepository
      * @param UserRepository $userRepository
+     * @param NormalizerInterface $normalizer
      * @return Response
+     * @throws ExceptionInterface
      */
     public function index(
         Request $request,
         AssetRepository $assetRepository,
         CategoryRepository $categoryRepository,
-        UserRepository $userRepository): Response
+        UserRepository $userRepository, NormalizerInterface $normalizer): Response
     {
         $assets = $assetRepository->findall();
-
-        $data = new SearchData();
-        $searchForm = $this->createForm(SearchFormType::class, $data);
-        $searchForm->handleRequest($request);
-
-        if ($searchForm->isSubmitted() && $searchForm->isValid()) {
-            if ($data->category && $data->owner) {
-                $assets = $assetRepository->findByCategoryOwner($data->category,$data->owner);
-            } else if ($data->category) {
-                $assets = $assetRepository->findBy(['category' => $data->category]);
-            } else if ($data->owner) {
-                $assets = $assetRepository->findBy(['owner' => $data->owner]);
-            } else {
-                $assets = $assetRepository->findAll();
-            }
-        }
-
-        return $this->render('asset/index.html.twig', [
-             'assets' => $assets,
-             'searchForm' => $searchForm->createView(),
+        $normalized = $normalizer->normalize($assets, null, [
+            'groups' => 'asset:read']);
+        var_dump($normalized);
+        $json = json_encode($normalized);
+        return new Response($json, 200, [
+            'content-type' => 'application/json'
         ]);
     }
 
