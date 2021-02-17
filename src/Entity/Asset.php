@@ -69,21 +69,25 @@ class Asset
      * mimeTypes={"image/png", "image/jpeg", "image/jpg"},
      * mimeTypesMessage= "formats autorisés: png, jpeg, jpg"
      * )
+     * @Groups("asset:read")
      */
     private $photoFile;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="assets")
+     * @Groups("asset:read")
      */
     private $owner;
 
     /**
      * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="assets")
+     * @Groups("asset:read")
      */
     private $category;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
+     * @Groups("asset:read")
      */
     private $updatedAt;
 
