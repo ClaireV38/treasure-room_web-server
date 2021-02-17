@@ -14,9 +14,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\Exception\ExceptionInterface;
-use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 
 /**
  * @Route("/asset", name="asset_")
@@ -29,20 +27,18 @@ class AssetController extends AbstractController
      * @param AssetRepository $assetRepository
      * @param CategoryRepository $categoryRepository
      * @param UserRepository $userRepository
-     * @param SerializerInterface $serializer
+     * @param DateTimeNormalizer $timeNormalizer
      * @return Response
      */
     public function index(
         Request $request,
         AssetRepository $assetRepository,
         CategoryRepository $categoryRepository,
-        UserRepository $userRepository, SerializerInterface $serializer): Response
+        UserRepository $userRepository): Response
     {
         $assets = $assetRepository->findall();
-        $json = $serializer->serialize($assets, 'json', ['groups' =>
-            'asset:read']);
-        return new Response($json, 200, [
-            'content-type' => 'application/json'
+        return $this->json($assets, 200, [], [
+            'groups' => 'asset:read'
         ]);
     }
 
