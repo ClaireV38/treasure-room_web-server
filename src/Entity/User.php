@@ -51,10 +51,16 @@ class User implements UserInterface
      */
     private $votes;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $apiToken;
+
     public function __construct()
     {
         $this->assets = new ArrayCollection();
         $this->votes = new ArrayCollection();
+        $this->apiToken = bin2hex(random_bytes(60));
     }
 
     /**
@@ -201,4 +207,16 @@ class User implements UserInterface
 
         return $this;
     }
+
+    public function getApiToken(): ?string
+    {
+        return $this->apiToken;
+    }
+
+   /* public function setApiToken(?string $apiToken): self
+    {
+        $this->apiToken = $apiToken;
+
+        return $this;
+    }  */
 }
