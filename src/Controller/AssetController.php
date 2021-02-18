@@ -15,6 +15,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Exception\NotEncodableValueException;
+use Symfony\Component\Serializer\Exception\NotNormalizableValueException;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -72,6 +73,11 @@ class AssetController extends AbstractController
                 'groups' => 'asset:read'
             ]);
         } catch (NotEncodableValueException $e) {
+            return $this->json([
+                'status' => 400,
+                'message' => $e->getMessage()
+            ], 400);
+        } catch (NotNormalizableValueException $e) {
             return $this->json([
                 'status' => 400,
                 'message' => $e->getMessage()

@@ -29,7 +29,7 @@ class Asset
 
     /**
      * @ORM\Column(type="string", length=50)
-     * @Assert\NotBlank(message="Veuillez saisir votre nom.")
+     * @Assert\NotBlank(message="Veuillez saisir un titre.")
      * @Assert\Length(max="50", maxMessage="Le titre ne doit pas exceder 50 caractères.")
      * @Groups("asset:read")
      */
