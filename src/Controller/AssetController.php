@@ -14,7 +14,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\Exception\NotEncodableValueException;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
+use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * @Route("/asset", name="asset_")
@@ -43,54 +46,48 @@ class AssetController extends AbstractController
     }
 
     /**
-     * @Route("/ranking", name="ranking", methods={"GET"})
-     * @param AssetRepository $assetRepository
+     * @Route("/", name="new", methods={"POST"})
+     * @param Request $request
+     * @param SerializerInterface $serializer
+     * @param EntityManagerInterface $entityManager
+     * @param ValidatorInterface $validator
      * @return Response
      */
-    public function ranking(AssetRepository $assetRepository): Response
+    public function new(Request $request, SerializerInterface $serializer,
+        EntityManagerInterface $entityManager, ValidatorInterface $validator): Response
     {
-        $assets = $assetRepository->findAllOrderByNbVotes();
-        return $this->render('asset/ranking.html.twig', [
-            'assets' => $assets,
-        ]);
-    }
+        $getJson = $request->getContent();
+        try {
+            $asset = $serializer->deserialize($getJson, Asset::class, 'json');
+            $asset->setDepositDate(new \DateTime());
+            $asset->setUpdatedAt(new \DateTime());
 
-    /**
-     * @Route("/new", name="new", methods={"GET","POST"})
-     */
-    public function new(Request $request): Response
-    {
-        $asset = new Asset();
-        $form = $this->createForm(AssetType::class, $asset);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
+            $errors = $validator->validate($asset);
+            if (count($errors) > 0) {
+                return $this->json($errors, 400);
+            }
             $entityManager->persist($asset);
-            $asset->setDepositDate(new \DateTime('now'));
-            $asset->setOwner($this->getUser());
             $entityManager->flush();
-            $this->addFlash('success', 'le trésor a bien été ajouté ');
-
-            return $this->redirectToRoute('adventurer_index');
+            return $this->json($asset, 201, [], [
+                'groups' => 'asset:read'
+            ]);
+        } catch (NotEncodableValueException $e) {
+            return $this->json([
+                'status' => 400,
+                'message' => $e->getMessage()
+            ], 400);
         }
-
-        return $this->render('asset/new.html.twig', [
-            'asset' => $asset,
-            'form' => $form->createView(),
-        ]);
     }
 
     /**
      * @Route("/{id}/vote", name="vote", methods={"GET"})
      */
-    public function voteFor(Asset $asset, EntityManagerInterface  $entityManager): Response
+    public function voteFor(Asset $asset, EntityManagerInterface $entityManager): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         if ($this->getUser()->getVotes()->contains($asset)) {
             $this->getUser()->removeVote($asset);
-        }
-        else {
+        } else {
             $this->getUser()->addVote($asset);
         }
         $entityManager->flush();
@@ -134,7 +131,7 @@ class AssetController extends AbstractController
      */
     public function delete(Request $request, Asset $asset): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$asset->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $asset->getId(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($asset);
             $entityManager->flush();
