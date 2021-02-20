@@ -60,7 +60,7 @@ class Asset
     private $photo;
 
     /**
-     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="assets")
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="assets", cascade={"persist"})
      * @Groups("asset:read")
      */
     private $owner;
@@ -144,6 +144,18 @@ class Asset
     public function setCategory(?Category $category): self
     {
         $this->category = $category;
+
+        return $this;
+    }
+
+    public function getOwner(): ?User
+    {
+        return $this->owner;
+    }
+
+    public function setOwner(?User $owner): self
+    {
+        $this->owner = $owner;
 
         return $this;
     }

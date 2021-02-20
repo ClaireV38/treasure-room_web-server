@@ -61,7 +61,6 @@ class AssetController extends AbstractController
         try {
             $asset = $serializer->deserialize($getJson, Asset::class, 'json');
             $asset->setDepositDate(new \DateTime());
-
             $errors = $validator->validate($asset);
             if (count($errors) > 0) {
                 return $this->json($errors, 400);
