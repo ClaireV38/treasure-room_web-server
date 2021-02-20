@@ -2,13 +2,8 @@
 
 namespace App\Controller;
 
-use App\Data\SearchData;
 use App\Entity\Asset;
 use App\Form\AssetType;
-use App\Form\ResetType;
-use App\Form\SearchByCategoryFormType;
-use App\Form\SearchByOwnerFormType;
-use App\Form\SearchFormType;
 use App\Repository\AssetRepository;
 use App\Repository\CategoryRepository;
 use App\Repository\UserRepository;
@@ -17,6 +12,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\Exception\NotEncodableValueException;
+use Symfony\Component\Serializer\Exception\NotNormalizableValueException;
+use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
+use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/asset", name="asset_")
@@ -24,11 +25,12 @@ use Symfony\Component\Routing\Annotation\Route;
 class AssetController extends AbstractController
 {
     /**
-     * @Route("/", name="index", methods={"GET","POST"})
+     * @Route("/", name="index", methods={"GET"})
      * @param Request $request
      * @param AssetRepository $assetRepository
      * @param CategoryRepository $categoryRepository
      * @param UserRepository $userRepository
+     * @param DateTimeNormalizer $timeNormalizer
      * @return Response
      */
     public function index(
@@ -38,84 +40,47 @@ class AssetController extends AbstractController
         UserRepository $userRepository): Response
     {
         $assets = $assetRepository->findall();
-
-        $data = new SearchData();
-        $searchForm = $this->createForm(SearchFormType::class, $data);
-        $searchForm->handleRequest($request);
-
-        if ($searchForm->isSubmitted() && $searchForm->isValid()) {
-            if ($data->category && $data->owner) {
-                $assets = $assetRepository->findByCategoryOwner($data->category,$data->owner);
-            } else if ($data->category) {
-                $assets = $assetRepository->findBy(['category' => $data->category]);
-            } else if ($data->owner) {
-                $assets = $assetRepository->findBy(['owner' => $data->owner]);
-            } else {
-                $assets = $assetRepository->findAll();
-            }
-        }
-
-        return $this->render('asset/index.html.twig', [
-             'assets' => $assets,
-             'searchForm' => $searchForm->createView(),
+        return $this->json($assets, 200, [], [
+            'groups' => 'asset:read'
         ]);
     }
 
     /**
-     * @Route("/ranking", name="ranking", methods={"GET"})
-     * @param AssetRepository $assetRepository
+     * @Route("/", name="new", methods={"POST"})
+     * @param Request $request
+     * @param SerializerInterface $serializer
+     * @param EntityManagerInterface $entityManager
+     * @param ValidatorInterface $validator
+     * @IsGranted("ROLE_USER")
      * @return Response
      */
-    public function ranking(AssetRepository $assetRepository): Response
+    public function new(Request $request, SerializerInterface $serializer,
+        EntityManagerInterface $entityManager, ValidatorInterface $validator): Response
     {
-        $assets = $assetRepository->findAllOrderByNbVotes();
-        return $this->render('asset/ranking.html.twig', [
-            'assets' => $assets,
-        ]);
-    }
-
-    /**
-     * @Route("/new", name="new", methods={"GET","POST"})
-     */
-    public function new(Request $request): Response
-    {
-        $asset = new Asset();
-        $form = $this->createForm(AssetType::class, $asset);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
+        $getJson = $request->getContent();
+        try {
+            $asset = $serializer->deserialize($getJson, Asset::class, 'json');
+            $asset->setDepositDate(new \DateTime());
+            $errors = $validator->validate($asset);
+            if (count($errors) > 0) {
+                return $this->json($errors, 400);
+            }
             $entityManager->persist($asset);
-            $asset->setDepositDate(new \DateTime('now'));
-            $asset->setOwner($this->getUser());
             $entityManager->flush();
-            $this->addFlash('success', 'le trésor a bien été ajouté ');
-
-            return $this->redirectToRoute('adventurer_index');
+            return $this->json($asset, 201, [], [
+                'groups' => 'asset:read'
+            ]);
+        } catch (NotEncodableValueException $e) {
+            return $this->json([
+                'status' => 400,
+                'message' => $e->getMessage()
+            ], 400);
+        } catch (NotNormalizableValueException $e) {
+            return $this->json([
+                'status' => 400,
+                'message' => $e->getMessage()
+            ], 400);
         }
-
-        return $this->render('asset/new.html.twig', [
-            'asset' => $asset,
-            'form' => $form->createView(),
-        ]);
-    }
-
-    /**
-     * @Route("/{id}/vote", name="vote", methods={"GET"})
-     */
-    public function voteFor(Asset $asset, EntityManagerInterface  $entityManager): Response
-    {
-        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
-        if ($this->getUser()->getVotes()->contains($asset)) {
-            $this->getUser()->removeVote($asset);
-        }
-        else {
-            $this->getUser()->addVote($asset);
-        }
-        $entityManager->flush();
-        return $this->json([
-            'hasVotedFor' => $this->getUser()->hasVotedFor($asset)
-        ]);
     }
 
     /**
@@ -123,8 +88,8 @@ class AssetController extends AbstractController
      */
     public function show(Asset $asset): Response
     {
-        return $this->render('asset/show.html.twig', [
-            'asset' => $asset,
+        return $this->json($asset, 200, [], [
+            'groups' => 'asset:read'
         ]);
     }
 
@@ -153,7 +118,7 @@ class AssetController extends AbstractController
      */
     public function delete(Request $request, Asset $asset): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$asset->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $asset->getId(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($asset);
             $entityManager->flush();

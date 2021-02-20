@@ -21,28 +21,28 @@ class AssetFixtures extends Fixture implements DependentFixtureInterface
     public const NB_OBJECT = 30;
 
     const STONESPHOTOS = [
-        'amethyst.jpg',
-        'crystal.jpg',
-        'diamond1.jpg',
-        'diamond2.jpg',
-        'stones.jpg',
+        'https://cdn.pixabay.com/photo/2015/01/17/13/52/gem-602252__340.jpg',
+        'https://cdn.pixabay.com/photo/2016/09/21/20/24/crystal-1685590__340.jpg',
+        'https://cdn.pixabay.com/photo/2017/09/06/21/43/crystal-2723145__340.jpg',
+        'https://cdn.pixabay.com/photo/2013/06/08/19/15/diamond-123338__340.jpg',
+        'https://cdn.pixabay.com/photo/2016/02/14/09/45/diamond-1199183__340.jpg',
 
     ];
 
     const SCULPTURESPHOTOS = [
-        'buddha.jpg',
-        'throne.png',
-        'sculpture.jpg',
-        'flying-carpet.png',
-        'angel.jpg',
-        'skull.jpg',
+        'https://cdn.pixabay.com/photo/2013/10/22/19/54/buddha-199462__340.jpg',
+        'https://cdn.pixabay.com/photo/2017/06/14/06/51/angel-2401263__340.jpg',
+        'https://cdn.pixabay.com/photo/2018/10/11/17/38/angel-3740393__340.jpg',
+        'https://cdn.pixabay.com/photo/2018/05/17/23/45/sculpture-3410011__340.jpg',
+        'https://cdn.pixabay.com/photo/2018/04/28/12/17/sculpture-3357150__340.jpg',
+        'https://cdn.pixabay.com/photo/2016/11/19/21/04/angel-1841177__340.jpg',
     ];
 
     const COINSPHOTOS = [
-        'treasure.jpg',
-        'vintage.jpg',
-        'gold.jpg',
-        'bitcoin.jpg',
+        'https://cdn.pixabay.com/photo/2016/08/31/10/43/gold-1633073__340.jpg',
+        'https://cdn.pixabay.com/photo/2018/09/23/18/38/coins-3698092__340.jpg',
+        'https://cdn.pixabay.com/photo/2017/12/17/14/12/bitcoin-3024279__340.jpg',
+        'https://cdn.pixabay.com/photo/2015/01/19/23/18/money-605075__340.jpg',
     ];
 
     public function getDependencies()
@@ -62,7 +62,6 @@ class AssetFixtures extends Fixture implements DependentFixtureInterface
                 $faker->randomFloat($nbMaxDecimals = 2, $min = 0, $max = NULL)
             );
             $asset->setPhoto(SELF::STONESPHOTOS[array_rand (SELF::STONESPHOTOS  , 1 )]);
-            $asset->setUpdatedAt(new DateTime('now'));
             $asset->setOwner($this->getReference('adventurer_' . rand(1, count(UserFixtures::ADVENTURERS))));
             $asset->setCategory($this->getReference('category_1'));
             $manager->persist($asset);
@@ -77,7 +76,6 @@ class AssetFixtures extends Fixture implements DependentFixtureInterface
                 $faker->randomFloat($nbMaxDecimals = 2, $min = 0, $max = NULL)
             );
             $asset->setPhoto(SELF::SCULPTURESPHOTOS[array_rand (SELF::SCULPTURESPHOTOS  , 1 )]);
-            $asset->setUpdatedAt(new DateTime('now'));
             $asset->setOwner($this->getReference('adventurer_' . rand(1, count(UserFixtures::ADVENTURERS))));
             $asset->setCategory($this->getReference('category_2'));
             $manager->persist($asset);
@@ -92,7 +90,6 @@ class AssetFixtures extends Fixture implements DependentFixtureInterface
                 $faker->randomFloat($nbMaxDecimals = 2, $min = 0, $max = NULL)
             );
             $asset->setPhoto(SELF::COINSPHOTOS[array_rand (SELF::COINSPHOTOS  , 1 )]);
-            $asset->setUpdatedAt(new DateTime('now'));
             $asset->setOwner($this->getReference('adventurer_' . rand(1, count(UserFixtures::ADVENTURERS))));
             $asset->setCategory($this->getReference('category_3'));
             $manager->persist($asset);

@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
@@ -18,16 +19,19 @@ class User implements UserInterface
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups("asset:read")
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
+     * @Groups("asset:read")
      */
     private $name;
 
     /**
      * @ORM\Column(type="json")
+     * @Groups("asset:read")
      */
     private $roles = [];
 
@@ -47,23 +51,16 @@ class User implements UserInterface
      */
     private $votes;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $apiToken;
+
     public function __construct()
     {
         $this->assets = new ArrayCollection();
         $this->votes = new ArrayCollection();
-    }
-
-    /**
-     * @param Asset $asset
-     * @return bool
-     */
-    public function hasVotedFor(Asset $asset) : bool
-    {
-        if ($this->votes->contains($asset)) {
-            return true;
-        } else {
-            return false;
-        }
+        $this->apiToken = bin2hex(random_bytes(60));
     }
 
     public function getId(): ?int
@@ -174,27 +171,15 @@ class User implements UserInterface
         return $this;
     }
 
-    /**
-     * @return Collection|Asset[]
-     */
-    public function getVotes(): Collection
+    public function getApiToken(): ?string
     {
-        return $this->votes;
+        return $this->apiToken;
     }
 
-    public function addVote(Asset $vote): self
+   /* public function setApiToken(?string $apiToken): self
     {
-        if (!$this->votes->contains($vote)) {
-            $this->votes[] = $vote;
-        }
+        $this->apiToken = $apiToken;
 
         return $this;
-    }
-
-    public function removeVote(Asset $vote): self
-    {
-        $this->votes->removeElement($vote);
-
-        return $this;
-    }
+    }  */
 }
