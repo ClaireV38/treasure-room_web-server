@@ -9,13 +9,11 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
-use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 
 /**
  * @ORM\Entity(repositoryClass=AssetRepository::class)
- * @Vich\Uploadable
  */
 class Asset
 {
@@ -62,19 +60,6 @@ class Asset
     private $photo;
 
     /**
-     * @Vich\UploadableField(mapping="photo_file", fileNameProperty="photo")
-     * @var File|Null
-     * @Assert\File(
-     * maxSize="2M",
-     * maxSizeMessage="Le fichier excède 2Mo.",
-     * mimeTypes={"image/png", "image/jpeg", "image/jpg"},
-     * mimeTypesMessage= "formats autorisés: png, jpeg, jpg"
-     * )
-     * @Groups("asset:read")
-     */
-    private $photoFile;
-
-    /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="assets")
      * @Groups("asset:read")
      */
@@ -85,22 +70,6 @@ class Asset
      * @Groups("asset:read")
      */
     private $category;
-
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     * @Groups("asset:read")
-     */
-    private $updatedAt;
-
-    /**
-     * @ORM\ManyToMany(targetEntity=User::class, mappedBy="votes")
-     */
-    private $voters;
-
-    public function __construct()
-    {
-        $this->voters = new ArrayCollection();
-    }
 
     public function getId(): ?int
     {
@@ -167,18 +136,6 @@ class Asset
         return $this;
     }
 
-    public function getOwner(): ?User
-    {
-        return $this->owner;
-    }
-
-    public function setOwner(?User $owner): self
-    {
-        $this->owner = $owner;
-
-        return $this;
-    }
-
     public function getCategory(): ?Category
     {
         return $this->category;
@@ -187,59 +144,6 @@ class Asset
     public function setCategory(?Category $category): self
     {
         $this->category = $category;
-
-        return $this;
-    }
-
-    public function getUpdatedAt(): ?\DateTimeInterface
-    {
-        return $this->updatedAt;
-    }
-
-    public function setUpdatedAt(?\DateTimeInterface $updatedAt): self
-    {
-        $this->updatedAt = $updatedAt;
-
-        return $this;
-    }
-
-    public function setPhotoFile(File $image = null): Asset
-    {
-        $this->photoFile = $image;
-        if ($image) {
-            $this->updatedAt = new DateTime('now');
-        }
-        return $this;
-    }
-
-    public function getPhotoFile(): ?File
-    {
-        return $this->photoFile;
-    }
-
-    /**
-     * @return Collection|User[]
-     */
-    public function getVoters(): Collection
-    {
-        return $this->voters;
-    }
-
-    public function addVoter(User $voter): self
-    {
-        if (!$this->voters->contains($voter)) {
-            $this->voters[] = $voter;
-            $voter->addVote($this);
-        }
-
-        return $this;
-    }
-
-    public function removeVoter(User $voter): self
-    {
-        if ($this->voters->removeElement($voter)) {
-            $voter->removeVote($this);
-        }
 
         return $this;
     }

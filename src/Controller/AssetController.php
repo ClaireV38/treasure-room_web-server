@@ -2,10 +2,8 @@
 
 namespace App\Controller;
 
-use App\Data\SearchData;
 use App\Entity\Asset;
 use App\Form\AssetType;
-use App\Form\SearchFormType;
 use App\Repository\AssetRepository;
 use App\Repository\CategoryRepository;
 use App\Repository\UserRepository;
@@ -19,6 +17,7 @@ use Symfony\Component\Serializer\Exception\NotNormalizableValueException;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/asset", name="asset_")
@@ -52,6 +51,7 @@ class AssetController extends AbstractController
      * @param SerializerInterface $serializer
      * @param EntityManagerInterface $entityManager
      * @param ValidatorInterface $validator
+     * @IsGranted("ROLE_USER")
      * @return Response
      */
     public function new(Request $request, SerializerInterface $serializer,
@@ -61,7 +61,6 @@ class AssetController extends AbstractController
         try {
             $asset = $serializer->deserialize($getJson, Asset::class, 'json');
             $asset->setDepositDate(new \DateTime());
-            $asset->setUpdatedAt(new \DateTime());
 
             $errors = $validator->validate($asset);
             if (count($errors) > 0) {
@@ -83,23 +82,6 @@ class AssetController extends AbstractController
                 'message' => $e->getMessage()
             ], 400);
         }
-    }
-
-    /**
-     * @Route("/{id}/vote", name="vote", methods={"GET"})
-     */
-    public function voteFor(Asset $asset, EntityManagerInterface $entityManager): Response
-    {
-        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
-        if ($this->getUser()->getVotes()->contains($asset)) {
-            $this->getUser()->removeVote($asset);
-        } else {
-            $this->getUser()->addVote($asset);
-        }
-        $entityManager->flush();
-        return $this->json([
-            'hasVotedFor' => $this->getUser()->hasVotedFor($asset)
-        ]);
     }
 
     /**

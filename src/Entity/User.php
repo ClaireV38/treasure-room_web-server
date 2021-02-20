@@ -63,19 +63,6 @@ class User implements UserInterface
         $this->apiToken = bin2hex(random_bytes(60));
     }
 
-    /**
-     * @param Asset $asset
-     * @return bool
-     */
-    public function hasVotedFor(Asset $asset) : bool
-    {
-        if ($this->votes->contains($asset)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
     public function getId(): ?int
     {
         return $this->id;
@@ -180,30 +167,6 @@ class User implements UserInterface
                 $asset->setOwner(null);
             }
         }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Asset[]
-     */
-    public function getVotes(): Collection
-    {
-        return $this->votes;
-    }
-
-    public function addVote(Asset $vote): self
-    {
-        if (!$this->votes->contains($vote)) {
-            $this->votes[] = $vote;
-        }
-
-        return $this;
-    }
-
-    public function removeVote(Asset $vote): self
-    {
-        $this->votes->removeElement($vote);
 
         return $this;
     }

@@ -21,28 +21,28 @@ class AssetFixtures extends Fixture implements DependentFixtureInterface
     public const NB_OBJECT = 30;
 
     const STONESPHOTOS = [
-        'amethyst.jpg',
-        'crystal.jpg',
-        'diamond1.jpg',
-        'diamond2.jpg',
-        'stones.jpg',
+        'https://pixabay.com/photos/crystal-rock-crystal-mineral-1685590/',
+        'https://pixabay.com/photos/amethyst-crystal-purple-macro-1394397/',
+        'https://pixabay.com/photos/gems-gemstones-semi-precious-stones-1400677/',
+        'https://pixabay.com/photos/precious-stone-pierre-crystal-3259727/',
+        'https://pixabay.com/photos/stones-gems-crystal-precious-498592/',
 
     ];
 
     const SCULPTURESPHOTOS = [
-        'buddha.jpg',
-        'throne.png',
-        'sculpture.jpg',
-        'flying-carpet.png',
-        'angel.jpg',
-        'skull.jpg',
+        'https://pixabay.com/photos/buddha-statue-buddhism-sculpture-199462/',
+        'https://pixabay.com/photos/angel-statue-figure-stone-2401263/',
+        'https://pixabay.com/photos/sculpture-bronze-bronze-statue-3410011/',
+        'https://pixabay.com/photos/sculpture-julius-caesar-statue-art-3357150/',
+        'https://pixabay.com/photos/sculpture-christ-figure-3408348/',
+        'https://pixabay.com/photos/buddha-statue-temple-buddhism-5082641/',
     ];
 
     const COINSPHOTOS = [
-        'treasure.jpg',
-        'vintage.jpg',
-        'gold.jpg',
-        'bitcoin.jpg',
+        'https://pixabay.com/photos/gold-coin-museum-treasure-thaler-1633073/',
+        'https://pixabay.com/photos/coins-cent-specie-money-euro-232010/',
+        'https://pixabay.com/photos/coins-money-currency-euro-specie-3652814/',
+        'https://pixabay.com/photos/coins-gold-golden-bounty-riches-1637722/',
     ];
 
     public function getDependencies()
