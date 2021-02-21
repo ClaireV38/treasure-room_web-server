@@ -1,16 +1,11 @@
 # checkpoint4_treasure_room 
 
-this is the inventory of the treasure room that repertories all assets discovered by each adventurer of the kingdom
+this is a web service : inventory of the treasure room of the kingdom castle
+it provides 3 services through 3 different routes :
 
-each adventurer has the possibility to :
-- see last 3 items deposited on the home page
-- see the details of each item
-- acces to the list of all items
-- filter them by category or by owner
-- login to see the list of his own items
-- add / edit and delete its own items (with photo upload)
-- vote for its favorites assets among the possession of the other adventurers
-- access to the ranking of the votes
+- route /asset accessible with "GET" method that gives the list of all treasures stocked in the treasure room
+- route /asset/{id} accessible with "GET" method that gives the details of one treasure from its id
+- route /asset accessible with "POST" method that permits to add one treasure in the treasure room
 
 # to set up :
 
