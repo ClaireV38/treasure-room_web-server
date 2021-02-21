@@ -7,6 +7,10 @@ it provides 3 services through 3 different routes :
 - route /asset/{id} accessible with "GET" method that gives the details of one treasure from its id
 - route /asset accessible with "POST" method that permits to add one treasure in the treasure room
 
+# link to demo video
+
+https://www.loom.com/share/90dedd4e80f2436cbaff39cfc61aa0c4
+
 # to set up :
 
 - clone this repository : git clone https://github.com/ClaireV38/checkpoint4_treasure_room.git
