@@ -56,6 +56,7 @@ class Asset
     /**
      * @ORM\Column(type="string", length=200, nullable=true)
      * @Groups("asset:read")
+     * @Assert\Url(message="le lien saisi ne correspond pas à une url")
      */
     private $photo;
 
